@@ -1,3 +1,5 @@
+// Script to scrape App Annie rankings
+
 var page = require('webpage').create();
 
 page.onConsoleMessage = function (msg) {
