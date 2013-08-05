@@ -17,6 +17,7 @@ Requires Phantom.js
 Usage
 -----
 phantomjs app-annie-scraper.js
+
 Output is written to top-apps.tsv (tab-separated values)
 
 To Do
