@@ -1,15 +1,13 @@
 // Script to scrape App Annie rankings
 // author: chris
 
-// TODO: fix utf encoding
-
 var page = require('webpage').create(),
     fs = require('fs');
 
-var outfile = fs.open('top-apps.csv', 'w');
-outfile.writeLine('ranking,app,developer,ranking_type,report_date'); // write headers
+var outfile = fs.open('top-apps.tsv', 'w');
+outfile.writeLine('ranking\tapp\tdeveloper\tranking_type\treport_date'); // write headers
 
-// There doesn't seem to be a clean way to get data from the page aside from console
+// Catch console messages and write to file, as that's how we'll get data out of the page
 page.onConsoleMessage = function(msg) {
     outfile.writeLine(msg);
 };
@@ -45,8 +43,8 @@ page.open('http://www.appannie.com/top/', function(status) {
 
 		    // Within each row, find all td elements of class=app and pull out the app info
 		    $(this).find('td.app').each(function(index) {
-			console.log(rank + ',' + $(this).find('span.app-name').attr('title').trim() + 
-				    ',' + $(this).find('span.app-pub-er').attr('title').trim() + ',' + app_types[index] + ',' + formatted_date);
+			console.log(rank + '\t' + $(this).find('span.app-name').attr('title').trim() + 
+				    '\t' + $(this).find('span.app-pub-er').attr('title').trim() + '\t' + app_types[index] + '\t' + formatted_date);
 		    });
 		});
 	    });
