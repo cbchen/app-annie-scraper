@@ -4,7 +4,7 @@
 var page = require('webpage').create(),
     fs = require('fs');
 
-var outfile = fs.open('top-apps.tsv', 'w');
+var outfile = fs.open('OUTPUT.tsv', 'w');
 outfile.writeLine('ranking\tapp\tdeveloper\tranking_type\treport_date'); // write headers
 
 // Catch console messages and write to file, as that's how we'll get data out of the page
@@ -32,10 +32,9 @@ page.open('http://www.appannie.com/top/', function(status) {
 		var formatted_date = format_date(new Date($('span.date').text()));
 		
 		// Pull the different app categories from the table header
-		var app_types = [];
-		$('div.head-helper th div').each(function(index) {
-		    app_types.push($(this).text());
-		});
+		var app_types = $('div.head-helper th div').map(function(index, element) {
+		    return $(element).text();
+		}).get();
 		
 		// Process the rankings row by row
 		$('#storestats-top-table tr').each(function(rank) {
