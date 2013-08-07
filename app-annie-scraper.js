@@ -9,22 +9,28 @@ function scrape_page_to_file(page) {
 	    day = date.getDate();
 	    return(date.getFullYear() + '-' + (month >= 10 ? month : '0' + month) + '-' + (day >= 10 ? day : '0' + day));
 	};
-	var formatted_date = format_date(new Date($('span.date').text()));
-	
+
 	// Pull the different app categories from the table header
 	var app_types = $('div.head-helper th div').map(function(index, element) {
 	    return $(element).text();
 	}).get();
 	
 	// Process the rankings row by row
-	$('#storestats-top-table tr').each(function(rank) {
-	    rank++;  // add 1 because rank is indexed at 0
+	$('#storestats-top-table tr').each(function(ranking) {
+	    ranking++;  // add 1 because ranking is indexed at 0
 	    
 	    // Within each row, find all td elements of class=app and pull out the app info
 	    $(this).find('td.app').each(function(index) {
-		console.log(rank + '\t' + $(this).find('span.app-name').attr('title').trim() + 
-			    '\t' + $(this).find('span.app-pub-er').attr('title').trim() + 
-			    '\t' + app_types[index] + '\t' + formatted_date);
+
+		var app_data = [ranking];  // initialize with ranking
+		app_data.push($(this).find('span.app-name').attr('title').trim());  // app_name
+		app_data.push($(this).find('span.app-pub-er').attr('title').trim());  // publisher
+		app_data.push(app_types[index]);  // ranking_type
+		app_data.push($(this).find('span.var').text().trim());  // ranking_change
+		app_data.push($(this).hasClass('has_iap') ? 1 : 0);  // has_in_app_purchases
+		app_data.push(format_date(new Date($('span.date').text())));  // report_date
+
+		console.log(app_data.join('\t'));
 	    });
 	});
     });
@@ -34,11 +40,14 @@ function scrape_page_to_file(page) {
 }
 
 // MAIN SCRIPT
-page = require('webpage').create(),
-fs = require('fs');
 
+var headers = ['ranking', 'app_name', 'publisher', 'ranking_type', 'ranking_change', 'has_in_app_purchases', 'report_date'];
+
+var fs = require('fs');
 outfile = fs.open('OUTPUT.tsv', 'w');
-outfile.writeLine('ranking\tapp\tdeveloper\tranking_type\treport_date'); // write headers
+outfile.writeLine(headers.join('\t'));
+
+var page = require('webpage').create();
 
 // Catch console messages and write to file, as that's how we'll get data out of the page
 page.onConsoleMessage = function(msg) {
