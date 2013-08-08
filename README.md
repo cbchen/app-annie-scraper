@@ -2,7 +2,7 @@ Background
 ----------
 App Annie is a site that compiles app ranking data for various mobile platforms. The site shows up to 500 apps for different platforms, but only 100 are shown immediately; hitting a link runs some JS to show all apps.
 
-Since basic curl scraping can't pull that dynamic content, I'm using Phantom.js to scrape the full list.
+Basic curl scraping can't pull that dynamic content, but Phantom.js (headless browser) can scrape the full list.
 
 Approach
 --------
@@ -18,8 +18,4 @@ Usage
 -----
 phantomjs app-annie-scraper.js
 
-Output is written to top-apps.tsv (tab-separated values)
-
-To Do
------
-Add other mobile platforms
+Output is written to output/ folder. Separate files for each page scraped (tab-separated values)
